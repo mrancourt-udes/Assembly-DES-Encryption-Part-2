@@ -55,8 +55,8 @@ bri10:  /*** SECTION DES ***/
         call    printf
         nop
 
-        ldub    [%l1],%l5           ! 64 bits du tampon dentree
-        inc     8,%l1               ! repositionnement du tampon de sortie
+        ldx     [%l1],%l5           ! lecture de 64 bits du tampon dentree
+        inc     8,%l1               ! mise a jour de la position dans le buffer d entree
 
         mov     %l2,%o0             ! la chaine de 64 bits
         mov     %l4,%o1             ! la cle de 64 bits
@@ -64,7 +64,7 @@ bri10:  /*** SECTION DES ***/
         call    DES                 ! encryption de la chaine de 64 bits
         nop
 
-        stx     %o0,[%l3]           ! ajout de 64 bits encodes dans le buffer de sortie
+        stx     %o0,[%l3]           ! ecriture de 64 bits encodes dans le buffer de sortie
         inc     8,%l3               ! mise a jour de la position dans le buffer de sortie
 
         ba      bri30               ! branchement vers la sortie
