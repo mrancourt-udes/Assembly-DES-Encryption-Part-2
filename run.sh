@@ -1,2 +1,2 @@
 scriptDES
-DES -c i=plain1.pln k=abcdefgh
+DES -c i=plain1.pln k=00000001 k=00000011 k=00000111 k=00001111

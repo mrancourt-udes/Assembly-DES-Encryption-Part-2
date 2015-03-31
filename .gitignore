@@ -11,3 +11,7 @@ old.zip
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+#Fichiers Generes
+DES
+bridgeDES.o
