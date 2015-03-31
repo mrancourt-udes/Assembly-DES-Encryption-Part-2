@@ -41,19 +41,7 @@ BridgeDES:
         mov    %i1,%l1              ! recuperation de l''adresse du tamon d''entree
         mov    %i3,%l3              ! recuperation de l''adresse du tamon de sortie
 
-        cmp     %i0,1               ! Operation : chiffrement
-        be      bri10
-        nop
-
-        cmp     %i0,2               ! Operation : dechiffrement
-        be      bri20
-        nop
-
 bri10:  /*** SECTION DES ***/
-
-        setx    ptfmT1,%l7,%o0
-        call    printf
-        nop
 
         ldx     [%l1],%l5           ! lecture de 64 bits du tampon dentree
         inc     8,%l1               ! mise a jour de la position dans le buffer d entree
@@ -61,27 +49,39 @@ bri10:  /*** SECTION DES ***/
         mov     %l2,%o0             ! la chaine de 64 bits
         mov     %l4,%o1             ! la cle de 64 bits
 
-        call    DES                 ! encryption de la chaine de 64 bits
+        cmp     %i0,1               ! Operation : chiffrement
+        be      bri15
         nop
 
-        stx     %o0,[%l3]           ! ecriture de 64 bits encodes dans le buffer de sortie
-        inc     8,%l3               ! mise a jour de la position dans le buffer de sortie
-
-        ba      bri30               ! branchement vers la sortie
+        cmp     %i0,2               ! Operation : dechiffrement
+        be      bri20
         nop
 
-bri20:  /*** SECTION DESINV ***/
+bri15:  call    DES                 ! encryption de la chaine de 64 bits
+        nop
+
+        setx    ptfmT1,%l7,%o0
+        call    printf
+        nop
+
+        call    bri30
+        nop
+
+bri20:  call    DESinv              ! encryption de la chaine de 64 bits
+        nop
 
         setx    ptfmT2,%l7,%o0
         call    printf
         nop
+        
+bri30:
+        stx     %o0,[%l3]           ! ecriture de 64 bits encodes dans le buffer de sortie
+        inc     8,%l3               ! mise a jour de la position dans le buffer de sortie
 
-        mov     %l4,%o1             ! la cle de 64 bits
-
-        call    DESinv              ! decription
+        ba      bri40               ! branchement vers la sortie
         nop
 
-bri30:  /*** FIN DU TRAITEMENT ***/
+bri40:  /*** FIN DU TRAITEMENT ***/
         ret
         restore
 
