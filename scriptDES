@@ -1,0 +1,7 @@
+#!/bin/csh
+endif
+if (-f bridgeDES.as) then
+    echo "compilation de bridgeDES.as"
+    /usr/ccs/bin/as -xarch=v9 bridgeDES.as -o bridgeDES.o
+endif
+/opt/solarisstudio/bin/cc -m64 -o DES serverDES.o bridgeDES.o des.o desInv.o key.o DESf.o perm.o subs.o
