@@ -89,8 +89,8 @@ bufOut: .skip   16000
 
         .section ".rodata"          ! section de donnees en lecture seulement
 
-debug:  .asciz "\n********************\nDEBUG\n********************\n Type..............%d\n Taille texte......%d\n Taille buffer.....%d\n Nb cles...........%d\n"
-dbgBuf: .asciz " Buffer in.........%08x%08x\n Buffer out........%08x%08x\n\n"
+debug:  .asciz "\n********************\n*      DEBUG       *\n********************\n* Type..............%d\n* Taille texte......%d\n* Taille buffer.....%d\n* Nb cles...........%d\n"
+dbgBuf: .asciz "* Buffer in.........%08x%08x\n* Buffer out........%08x%08x\n\n"
 
 ptfmdT: .asciz "Texte : %d\n"
 ptfmdK: .asciz "  Cle : %d\n"
