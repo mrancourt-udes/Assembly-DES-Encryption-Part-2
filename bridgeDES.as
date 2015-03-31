@@ -38,6 +38,9 @@ BridgeDES:
         * END  DEBUG  SECTION
         ********************/
 
+        mov    %i1,%l1              ! recuperation de l''adresse du tamon d''entree
+        mov    %i3,%l3              ! recuperation de l''adresse du tamon de sortie
+
         cmp     %i0,1               ! Operation : chiffrement
         be      bri10
         nop
@@ -52,9 +55,8 @@ bri10:  /*** SECTION DES ***/
         call    printf
         nop
 
-        setx    buffIn,%l7,%l1      ! chargement de ladresse du tampon dentree
-        ldx     [%l1],%l2           ! 64 permiers bits du tampon dentree
-        setx    bufOut,%l7,%l3      ! chargement de ladresse du tampon de sortie
+        ldub    [%l1],%l5           ! 64 bits du tampon dentree
+        inc     8,%l1               ! repositionnement du tampon de sortie
 
         mov     %l2,%o0             ! la chaine de 64 bits
         mov     %l4,%o1             ! la cle de 64 bits
@@ -62,8 +64,8 @@ bri10:  /*** SECTION DES ***/
         call    DES                 ! encryption de la chaine de 64 bits
         nop
 
-        stx     %l6,[%l3]           ! ajout de 64 bits encodes dans le buffer de sortie
-        inc     64,%l3              ! mise a jour de la position dans le buffer de sortie
+        stx     %o0,[%l3]           ! ajout de 64 bits encodes dans le buffer de sortie
+        inc     8,%l3               ! mise a jour de la position dans le buffer de sortie
 
         ba      bri30               ! branchement vers la sortie
         nop
@@ -83,10 +85,6 @@ bri30:  /*** FIN DU TRAITEMENT ***/
         ret
         restore
 
-        .section ".bss"
-        .align  4
-bufOut: .skip   16000
-
         .section ".rodata"          ! section de donnees en lecture seulement
 
 debug:  .asciz "\n********************\n*      DEBUG       *\n********************\n* Type..............%d\n* Taille texte......%d\n* Taille buffer.....%d\n* Nb cles...........%d\n"
@@ -96,16 +94,6 @@ ptfmdT: .asciz "Texte : %d\n"
 ptfmdK: .asciz "  Cle : %d\n"
 ptfmxx: .asciz "%08x%08x\n"
 ptfmtd: .asciz "%d\n"
-
-        .align  4
-buffIn: .byte   "e"
-        .byte   "n"
-        .byte   "c"
-        .byte   "r"
-        .byte   "t"
-        .byte   "e"
-        .byte   "s"
-        .byte   "t"
 
 ptfmT1: .asciz "Chiffrement\n"
 ptfmT2: .asciz "Dechiffrement\n"
