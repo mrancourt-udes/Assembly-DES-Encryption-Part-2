@@ -33,10 +33,12 @@ BridgeDES:
         srlx    %o3,32,%o3
         call    printf
         nop
-        mov     1,%l4               ! cle 1 temporaire
         /********************
         * END  DEBUG  SECTION
         ********************/
+
+        setx    k1,%l7,%l4
+        ldx     [%l4],%l4
 
         mov    %i1,%l1              ! recuperation de l''adresse du tamon d''entree
         mov    %i3,%l3              ! recuperation de l''adresse du tamon de sortie
@@ -63,19 +65,11 @@ bri15:  /*** SECTION DES ***/
         call    DES                 ! encryption de la chaine de 64 bits
         nop
 
-        setx    ptfmT1,%l7,%o0
-        call    printf
-        nop
-
         call    bri30
         nop
 
 bri20:  /*** SECTION DESINV ***/
         call    DESinv              ! encryption de la chaine de 64 bits
-        nop
-
-        setx    ptfmT2,%l7,%o0
-        call    printf
         nop
 
 bri30:
@@ -92,7 +86,7 @@ bri40:  /*** FIN DU TRAITEMENT ***/
         restore
 
         .section ".rodata"          ! section de donnees en lecture seulement
-
+k1:     .xword 12345678
 debug:  .asciz "\n********************\n*      DEBUG       *\n********************\n* Type..............%d\n* Taille texte......%d\n* Taille buffer.....%d\n* Nb cles...........%d\n"
 dbgBuf: .asciz "* Buffer in.........%08x%08x\n* Buffer out........%08x%08x\n\n"
 

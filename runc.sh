@@ -1,12 +1,12 @@
 scriptDES
 echo ""
 echo "*********************************"
-echo "* Encryption de plain1.pln      *"
-echo "* K1 => 00000001                *"
+echo "* Decryption de cry1.cry        *"
+echo "* K1 => 01234567                *"
 echo "*********************************"
-DES -c i=plain1.pln k=00000001
+DES -d i=plain1.cry k=01234567
 echo "*********************************"
-echo "* Contenu du fichier plain1.cry *"
+echo "* Contenu du fichier plain1.pln *"
 echo "*********************************"
-xxd plain1.cry
+xxd plain1.pln
 echo ""
