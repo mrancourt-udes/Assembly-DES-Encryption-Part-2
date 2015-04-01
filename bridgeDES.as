@@ -37,45 +37,47 @@ BridgeDES:
         * END  DEBUG  SECTION
         ********************/
 
-        setx    k1,%l7,%l4
-        ldx     [%l4],%l4
+        clr     %o6						! indice de cle
 
-        mov    %i1,%l1              ! recuperation de l''adresse du tamon d''entree
-        mov    %i3,%l3              ! recuperation de l''adresse du tamon de sortie
-        clr     %o6
+        add 	%o6,8,%o3
+        setx    k1,%l7,%l4				! chargement de ladresse de la cle
+        ldx     [%l4+%o3],%l4			! chargment de la cle
 
-bri05:  udivx  %i2,8,%l6
-        clr    %l2
+        mov    	%i1,%l1              	! recuperation de l''adresse du tamon d''entree
+        mov    	%i3,%l3              	! recuperation de l''adresse du tamon de sortie
+
+bri05:  udivx  	%i2,8,%l6
+        clr    	%l2
 bri10:
 
-        ldx     [%l1+%l2],%l5       ! lecture de 64 bits du tampon dentree
-        inc     8,%l1               ! mise a jour de la position dans le buffer d entree
+        ldx     [%l1+%l2],%l5       	! lecture de 64 bits du tampon dentree
+        inc     8,%l1               	! mise a jour de la position dans le buffer d entree
 
-        mov     %l5,%o0             ! la chaine de 64 bits
-        mov     %l4,%o1             ! la cle de 64 bits
+        mov     %l5,%o0             	! la chaine de 64 bits
+        mov     %l4,%o1             	! la cle de 64 bits
 
-        cmp     %i0,1               ! Operation : chiffrement
+        cmp     %i0,1               	! Operation : chiffrement
         be      bri15
         nop
 
-        cmp     %i0,2               ! Operation : dechiffrement
+        cmp     %i0,2               	! Operation : dechiffrement
         be      bri20
         nop
 
 bri15:  /*** SECTION DES ***/
-        call    DES                 ! encryption de la chaine de 64 bits
+        call    DES                 	! encryption de la chaine de 64 bits
         nop
 
         call    bri30
         nop
 
 bri20:  /*** SECTION DESINV ***/
-        call    DESinv              ! encryption de la chaine de 64 bits
+        call    DESinv              	! encryption de la chaine de 64 bits
         nop
 
 bri30:
-        stx     %o0,[%l3]           ! ecriture de 64 bits encodes dans le buffer de sortie
-        inc     8,%l3               ! mise a jour de la position dans le buffer de sortie
+        stx     %o0,[%l3]           	! ecriture de 64 bits encodes dans le buffer de sortie
+        inc     8,%l3               	! mise a jour de la position dans le buffer de sortie
         inc     %l2
 
         cmp     %l2,%l6
@@ -84,14 +86,16 @@ bri30:
 
         inc     %o6
         cmp     %i5,%o6
-        be      bri05
+        bne     bri05
+        nop
 
 bri40:  /*** FIN DU TRAITEMENT ***/
         ret
         restore
 
-        .section ".rodata"          ! section de donnees en lecture seulement
+        .section ".rodata"          	! section de donnees en lecture seulement
 k1:     .xword 12345678
+k2:     .xword 87654321
 debug:  .asciz "\n********************\n*      DEBUG       *\n********************\n* Type..............%d\n* Taille texte......%d\n* Taille buffer.....%d\n* Nb cles...........%d\n"
 dbgBuf: .asciz "* Buffer in.........%08x%08x\n* Buffer out........%08x%08x\n\n"
 
