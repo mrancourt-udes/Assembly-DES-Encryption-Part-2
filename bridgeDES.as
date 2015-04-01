@@ -37,20 +37,32 @@ BridgeDES:
         * END  DEBUG  SECTION
         ********************/
 
-        clr     %o6						! indice de cle
+        mov     1,%o6					! indice de cle
+        mov     1,%l4
+        mov     %i1,%l1                 ! recuperation de l''adresse du tamon d''entree
+        mov     %i3,%l3                 ! recuperation de l''adresse du tamon de sortie
 
-        add 	%o6,8,%o3
-        !setx    k1,%l7,%l4				! chargement de ladresse de la cle
-        !ldx     [%l4+%o3],%l4			! chargment de la cle
-
-        call	cles
+bri01:  /* CLE 1 */
+        ldx    [%fp+2047],%L4           ! chargement de la cle 1
+        ba bri05
         nop
 
-        mov    	%i1,%l1              	! recuperation de l''adresse du tamon d''entree
-        mov    	%i3,%l3              	! recuperation de l''adresse du tamon de sortie
+bti02:  /* CLE 1 */
+        ldx    [%fp+2047+24],%L4        ! chargement de la cle 2
+        ba bri05
+        nop
+
+bri03:  /* CLE 3 */                    
+        ldx    [%fp+2047+32],%L4        ! chargement de la cle 3
+        ba bri05
+        nop
+
+bri04:  /* CLE 4 */                     
+        ldx    [%fp+2047+40],%L4        ! chargement de la cle 4   
 
 bri05:  udivx  	%i2,8,%l6
         clr    	%l2
+
 bri10:
 
         ldx     [%l1+%l2],%l5       	! lecture de 64 bits du tampon dentree
@@ -87,10 +99,10 @@ bri30:
         bl      bri10
         nop
 
-        inc     %o6
         cmp     %i5,%o6
         bne     bri05
-        nop
+        inc     %o6
+
 
 bri40:  /*** FIN DU TRAITEMENT ***/
         ret
@@ -109,8 +121,3 @@ ptfmtd: .asciz "%d\n"
 
 ptfmT1: .asciz "Chiffrement\n"
 ptfmT2: .asciz "Dechiffrement\n"
-
-		.section ".text"
-cles:	ldx [%sp+2047+128],%l4
-		retl
-		nop
