@@ -42,8 +42,9 @@ BridgeDES:
 
         mov    %i1,%l1              ! recuperation de l''adresse du tamon d''entree
         mov    %i3,%l3              ! recuperation de l''adresse du tamon de sortie
+        clr     %o6
 
-        udivx  %i2,8,%l6
+bri05:  udivx  %i2,8,%l6
         clr    %l2
 bri10:
 
@@ -80,6 +81,10 @@ bri30:
         cmp     %l2,%l6
         bl      bri10
         nop
+
+        inc     %o6
+        cmp     %i5,%o6
+        be      bri05
 
 bri40:  /*** FIN DU TRAITEMENT ***/
         ret
