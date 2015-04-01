@@ -40,8 +40,11 @@ BridgeDES:
         clr     %o6						! indice de cle
 
         add 	%o6,8,%o3
-        setx    k1,%l7,%l4				! chargement de ladresse de la cle
-        ldx     [%l4+%o3],%l4			! chargment de la cle
+        !setx    k1,%l7,%l4				! chargement de ladresse de la cle
+        !ldx     [%l4+%o3],%l4			! chargment de la cle
+
+        call	cles
+        nop
 
         mov    	%i1,%l1              	! recuperation de l''adresse du tamon d''entree
         mov    	%i3,%l3              	! recuperation de l''adresse du tamon de sortie
@@ -106,3 +109,8 @@ ptfmtd: .asciz "%d\n"
 
 ptfmT1: .asciz "Chiffrement\n"
 ptfmT2: .asciz "Dechiffrement\n"
+
+		.section ".text"
+cles:	ldx [%sp+2047+128],%l4
+		retl
+		nop
