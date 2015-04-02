@@ -39,33 +39,49 @@ BridgeDES:
 
         mov     1,%o6					! indice de cle
         mov     1,%l4
-        mov     %i1,%l1                 ! recuperation de l''adresse du tamon d''entree
-        mov     %i3,%l3                 ! recuperation de l''adresse du tamon de sortie
+        mov     %i1,%l1                 ! recuperation de l''adresse du tampon d''entree
+        mov     %i3,%l3                 ! recuperation de l''adresse du tampon de sortie
+
+bri00:  udivx   %i2,8,%l6
+        mov     1,%l2
+
+        cmp     %l2,%g0                   ! cle 1
+        be      bri01
+        nop 
+
+        cmp     %l2,%g0                   ! cle 2
+        be      bri02
+        nop
+
+        cmp     %l2,%g0                   ! cle 3
+        be      bri03
+        nop
+
+        cmp     %l2,%g0                   ! cle 4
+        be      bri04
+        nop
 
 bri01:  /* CLE 1 */
         ldx    [%fp+2047],%L4           ! chargement de la cle 1
-        ba bri05
+        ba bri10
         nop
 
-bti02:  /* CLE 1 */
+bri02:  /* CLE 1 */
         ldx    [%fp+2047+24],%L4        ! chargement de la cle 2
-        ba bri05
+        ba bri10
         nop
 
 bri03:  /* CLE 3 */                    
         ldx    [%fp+2047+32],%L4        ! chargement de la cle 3
-        ba bri05
+        ba bri10
         nop
 
 bri04:  /* CLE 4 */                     
         ldx    [%fp+2047+40],%L4        ! chargement de la cle 4   
 
-bri05:  udivx  	%i2,8,%l6
-        clr    	%l2
-
 bri10:
 
-        ldx     [%l1+%l2],%l5       	! lecture de 64 bits du tampon dentree
+        ldx     [%l1],%l5       	    ! lecture de 64 bits du tampon dentree
         inc     8,%l1               	! mise a jour de la position dans le buffer d entree
 
         mov     %l5,%o0             	! la chaine de 64 bits
@@ -93,14 +109,13 @@ bri20:  /*** SECTION DESINV ***/
 bri30:
         stx     %o0,[%l3]           	! ecriture de 64 bits encodes dans le buffer de sortie
         inc     8,%l3               	! mise a jour de la position dans le buffer de sortie
-        inc     %l2
 
         cmp     %l2,%l6
         bl      bri10
-        nop
+        inc     %l2
 
         cmp     %i5,%o6
-        bne     bri05
+        bne     bri00
         inc     %o6
 
 
