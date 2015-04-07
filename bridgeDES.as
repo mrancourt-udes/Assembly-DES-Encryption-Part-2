@@ -68,22 +68,22 @@ bri00:  udivx   %i2,8,%l6
         nop
 
 bri01:  /* CLE 1 */
-        ldx    [%fp+2047+CLE1],%L4          ! chargement de la cle 1
+        ldx    [%fp+2047+CLE1],%o1          ! chargement de la cle 1
         ba bri10
         nop
 
 bri02:  /* CLE 1 */
-        ldx    [%fp+2047+CLE2],%L4          ! chargement de la cle 2
+        ldx    [%fp+2047+CLE2],%o1          ! chargement de la cle 2
         ba bri10
         nop
 
 bri03:  /* CLE 3 */                    
-        ldx    [%fp+2047+CLE3],%L4          ! chargement de la cle 3
+        ldx    [%fp+2047+CLE3],%o1          ! chargement de la cle 3
         ba bri10
         nop
 
 bri04:  /* CLE 4 */                     
-        ldx    [%fp+2047+CLE4],%L4         ! chargement de la cle 4   
+        ldx    [%fp+2047+CLE4],%o1         ! chargement de la cle 4   
 
 bri10:
 
