@@ -83,7 +83,7 @@ bri03:  /* CLE 3 */
         nop
 
 bri04:  /* CLE 4 */                     
-        ldx    [%fp+2047+CLE14],%L4         ! chargement de la cle 4   
+        ldx    [%fp+2047+CLE4],%L4         ! chargement de la cle 4   
 
 bri10:
 
