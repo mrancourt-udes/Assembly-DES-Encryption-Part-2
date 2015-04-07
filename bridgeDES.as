@@ -10,6 +10,12 @@
     sortie : Aucune.
     auteur : Vincent Ribou et Martin Rancourt Universite de Sherbrooke, 2015.
 */
+        PARAM = 176
+        CLE1  = PARAM
+        CLE2  = PARAM + 8
+        CLE3  = CLE2 + 8
+        CLE4  = CLE3 + 8
+
         .section ".text"
 
 BridgeDES:
@@ -37,47 +43,47 @@ BridgeDES:
         * END  DEBUG  SECTION
         ********************/
 
-        mov     1,%o6					! indice de cle
+        mov     1,%o6					    ! indice de cle
         mov     1,%l4
-        mov     %i1,%l1                 ! recuperation de l''adresse du tampon d''entree
-        mov     %i3,%l3                 ! recuperation de l''adresse du tampon de sortie
+        mov     %i1,%l1                     ! recuperation de l''adresse du tampon d''entree
+        mov     %i3,%l3                     ! recuperation de l''adresse du tampon de sortie
 
 bri00:  udivx   %i2,8,%l6
         mov     1,%l2
 
-        cmp     %l2,%g0                   ! cle 1
+        cmp     %l2,1                     ! cle 1
         be      bri01
         nop 
 
-        cmp     %l2,%g0                   ! cle 2
+        cmp     %l2,2                     ! cle 2
         be      bri02
         nop
 
-        cmp     %l2,%g0                   ! cle 3
+        cmp     %l2,3                     ! cle 3
         be      bri03
         nop
 
-        cmp     %l2,%g0                   ! cle 4
+        cmp     %l2,4                     ! cle 4
         be      bri04
         nop
 
 bri01:  /* CLE 1 */
-        ldx    [%fp+2047],%L4           ! chargement de la cle 1
+        ldx    [%fp+2047+CLE1],%L4          ! chargement de la cle 1
         ba bri10
         nop
 
 bri02:  /* CLE 1 */
-        ldx    [%fp+2047+24],%L4        ! chargement de la cle 2
+        ldx    [%fp+2047+CLE2],%L4          ! chargement de la cle 2
         ba bri10
         nop
 
 bri03:  /* CLE 3 */                    
-        ldx    [%fp+2047+32],%L4        ! chargement de la cle 3
+        ldx    [%fp+2047+CLE3],%L4          ! chargement de la cle 3
         ba bri10
         nop
 
 bri04:  /* CLE 4 */                     
-        ldx    [%fp+2047+40],%L4        ! chargement de la cle 4   
+        ldx    [%fp+2047+CLE14],%L4         ! chargement de la cle 4   
 
 bri10:
 
