@@ -44,26 +44,26 @@ BridgeDES:
         ********************/
 
         mov     1,%o6					    ! indice de cle
-        mov     1,%l4
+        mov     1,%l2                       ! compteur
         mov     %i1,%l1                     ! recuperation de l''adresse du tampon d''entree
         mov     %i3,%l3                     ! recuperation de l''adresse du tampon de sortie
+        udivx   %i2,8,%l6
 
-bri00:  udivx   %i2,8,%l6
-        mov     1,%l2
+bri00:  
 
-        cmp     %l2,1                     ! cle 1
+        cmp     %o6,1                     ! cle 1
         be      bri01
         nop 
 
-        cmp     %l2,2                     ! cle 2
+        cmp     %o6,2                     ! cle 2
         be      bri02
         nop
 
-        cmp     %l2,3                     ! cle 3
+        cmp     %o6,3                     ! cle 3
         be      bri03
         nop
 
-        cmp     %l2,4                     ! cle 4
+        cmp     %o6,4                     ! cle 4
         be      bri04
         nop
 
@@ -83,15 +83,14 @@ bri03:  /* CLE 3 */
         nop
 
 bri04:  /* CLE 4 */                     
-        ldx    [%fp+2047+CLE4],%o1         ! chargement de la cle 4   
+        ldx    [%fp+2047+CLE4],%o1          ! chargement de la cle 4
 
 bri10:
 
         ldx     [%l1],%l5       	    ! lecture de 64 bits du tampon dentree
-        inc     8,%l1               	! mise a jour de la position dans le buffer d entree
+        !inc     8,%l1               	! mise a jour de la position dans le buffer d entree
 
         mov     %l5,%o0             	! la chaine de 64 bits
-        mov     %l4,%o1             	! la cle de 64 bits
 
         cmp     %i0,1               	! Operation : chiffrement
         be      bri15
@@ -113,18 +112,30 @@ bri20:  /*** SECTION DESINV ***/
         nop
 
 bri30:
-        stx     %o0,[%l3]           	! ecriture de 64 bits encodes dans le buffer de sortie
-        inc     8,%l3               	! mise a jour de la position dans le buffer de sortie
+        cmp     %i5,%o6
+        bne     bri32
+        nop
+bri31:                                  ! ecriture dans le tampon dentree
+        stx     %o0,[%l3]               ! ecriture de 64 bits encodes dans le buffer de sortie
+        inc     8,%l3                   ! mise a jour de la position dans le buffer de sortie
+        ba bri33
+        nop
+
+bri32:                                  ! ecriture dans le tampon de sortie
+        stx     %o0,[%l1]               ! ecriture de 64 bits encodes dans le buffer d entree
+
+bri33: 
+        inc     8,%l1                   ! mise a jour de la position dans le buffer d entree
 
         cmp     %l2,%l6
         bl      bri10
         inc     %l2
 
         cmp     %i5,%o6
-        bne     bri00
+        bg     bri00
         inc     %o6
 
-
+ 
 bri40:  /*** FIN DU TRAITEMENT ***/
         ret
         restore
@@ -142,3 +153,4 @@ ptfmtd: .asciz "%d\n"
 
 ptfmT1: .asciz "Chiffrement\n"
 ptfmT2: .asciz "Dechiffrement\n"
+ptfmtst: .asciz "#########################\n#####################"
