@@ -17,12 +17,13 @@ echo "* K2 => 22222222                *"
 echo "* K3 => 33333333                *"
 echo "* K4 => 44444444                *"
 echo "*********************************"
-../DES -c i=testL.pln k=11111111
+../DES -c i=testL.pln k=11111111 k=22222222
 #v=testtest
 echo "*********************************"
 echo "* Contenu du fichier testL.cry  *"
 echo "*********************************"
 xxd testL.cry
+echo "" > testL.pln
 echo ""
 echo "*********************************"
 echo "* Decryption de testL.cry       *"
@@ -31,7 +32,7 @@ echo "* K2 => 22222222                *"
 echo "* K3 => 33333333                *"
 echo "* K4 => 44444444                *"
 echo "*********************************"
-../DES -d i=testL.cry k=11111111
+../DES -d i=testL.cry k=22222222 k=11111111
 echo "*********************************"
 echo "* Contenu du fichier tes4.pln  *"
 echo "*********************************"

@@ -19,12 +19,18 @@ BridgeDES:
         save    %sp,-208,%sp
 
         mov     0,%l0                   ! position dens les tampons
+        mov     %fp,%l2
 
 bri00:
-        /* BOUCLER SUR LES 4 CLES */
-        ldx    [%fp+2047+PARAM],%o1     ! chargement de la cle 1
+        mov     1,%l1                   ! indice de la cle
+        mov     %l2,%l3                 ! adresse de la cle
 
-        ldx     [%i1+%l0],%o0               ! la chaine de 64 bits
+bri05: /* BOUCLER SUR LES 4 CLES */
+
+        ldx    [%l3+2047+PARAM],%o1     ! chargement de la cle 1
+        inc     8,%l3                   ! adresse de la cle
+
+        ldx     [%i1+%l0],%o0           ! la chaine de 64 bits
 
         cmp     %i0,2                   ! Operation : chiffrement
         be      bri20
@@ -42,6 +48,11 @@ bri20:  /*** SECTION DESINV ***/
         nop
 
 bri30:                                  
+    
+        stx     %o0,[%i1+%l0]           ! ecriture dans le tampon sortie
+        cmp     %l1,%i5                 ! branchement selon lindice de la cle
+        bl      bri05
+        inc     1,%l1                   ! index de la cle
 
         stx     %o0,[%i3+%l0]           ! ecriture dans le tampon sortie
         inc     8,%l0                   ! mise a jour de la position dans les tampons  
@@ -61,7 +72,7 @@ dbgBuf: .asciz "* Buffer in.........%08x%08x\n* Buffer out........%08x%08x\n\n"
 ptfmdT: .asciz "Texte : %d\n"
 ptfmdK: .asciz "  Cle : %d\n"
 ptfmxx: .asciz "%08x%08x\n"
-ptfmtd: .asciz "%a\n"
+ptfmtd: .asciz "%d\n"
 
 ptfmT1: .asciz "Chiffrement\n"
 ptfmT2: .asciz "Dechiffrement\n"
