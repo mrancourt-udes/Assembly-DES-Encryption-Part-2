@@ -9,6 +9,10 @@
                 Cles (Une a quatre de type)
     sortie : Aucune.
     auteur : Vincent Ribou et Martin Rancourt Universite de Sherbrooke, 2015.
+    Technique de recuperation des parametres : 
+        Utilisation de la pile à l'aide du registre %fp
+    Technique d'encription : 
+        Chaque blocs de 8 octets sont encryptes un apres l'autre avec les x cles
 */
         PARAM = 176
 
@@ -19,15 +23,15 @@ BridgeDES:
         save    %sp,-208,%sp
 
         mov     0,%l0                   ! position dens les tampons
-        mov     %fp,%l2
+        mov     %fp,%l2                 ! adresse de fp
 
 bri00:
         mov     1,%l1                   ! indice de la cle
         mov     %l2,%l3                 ! adresse de la cle
 
-bri05: /* BOUCLER SUR LES 4 CLES */
+bri05:                                  ! Boucle sur les cles
 
-        ldx    [%l3+2047+PARAM],%o1     ! chargement de la cle 1
+        ldx     [%l3+2047+PARAM],%o1    ! chargement de la cle
         inc     8,%l3                   ! adresse de la cle
 
         ldx     [%i1+%l0],%o0           ! la chaine de 64 bits
@@ -36,31 +40,31 @@ bri05: /* BOUCLER SUR LES 4 CLES */
         be      bri20
         nop
 
-bri15:  /*** SECTION DES ***/
+bri15:                                  ! section DES
         call    DES                     ! encryption de la chaine de 64 bits
         nop
 
-        ba bri30
+        ba bri30                        ! bypass de la decription
         nop
 
-bri20:  /*** SECTION DESINV ***/
+bri20:                                  ! section DESINV
         call    DESinv                  ! decryption de la chaine de 64 bits
         nop
 
-bri30:                                  
-    
+bri30:
+
         stx     %o0,[%i1+%l0]           ! ecriture dans le tampon sortie
         cmp     %l1,%i5                 ! branchement selon lindice de la cle
         bl      bri05
         inc     1,%l1                   ! index de la cle
 
         stx     %o0,[%i3+%l0]           ! ecriture dans le tampon sortie
-        inc     8,%l0                   ! mise a jour de la position dans les tampons  
+        inc     8,%l0                   ! mise a jour de la position dans les tampons
 
         cmp     %l0,%i2
-        bl      bri00
+        bl      bri00                   ! traitement du prochain octet
         nop
 
-fin:  /*** FIN DU TRAITEMENT ***/
+bri40:                                  ! fin du traitement
         ret
         restore
