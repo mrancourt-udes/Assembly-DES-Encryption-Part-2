@@ -18,11 +18,13 @@ BridgeDES:
 
         save    %sp,-208,%sp
 
+        mov     0,%l0                   ! position dens les tampons
+
 bri00:
         /* BOUCLER SUR LES 4 CLES */
         ldx    [%fp+2047+PARAM],%o1     ! chargement de la cle 1
 
-        ldx     [%i1],%o0               ! la chaine de 64 bits
+        ldx     [%i1+%l0],%o0               ! la chaine de 64 bits
 
         cmp     %i0,2                   ! Operation : chiffrement
         be      bri20
@@ -39,8 +41,14 @@ bri20:  /*** SECTION DESINV ***/
         call    DESinv                  ! decryption de la chaine de 64 bits
         nop
 
-bri30:                                  ! ecriture dans le tampon sortie
-        stx     %o0,[%i3]               
+bri30:                                  
+
+        stx     %o0,[%i3+%l0]           ! ecriture dans le tampon sortie
+        inc     8,%l0                   ! mise a jour de la position dans les tampons  
+
+        cmp     %l0,%i2
+        bl      bri00
+        nop
 
 fin:  /*** FIN DU TRAITEMENT ***/
         ret
